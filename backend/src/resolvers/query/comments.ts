@@ -25,33 +25,34 @@ const createEdges = <TNode, CursorField extends keyof TNode>(
 
 export const commentConnection = async (
   parent: any,
-  args: CommentConnectionInput,
+  { input }: CommentConnectionInput,
   { database }: { database: Collection<Comment> },
   _: any
 ) => {
-  const prevDate = args.input.after ?? new Date(0).toISOString();
+  const prevDate = input.after ?? new Date(0).toISOString();
 
-  console.log(args.input);
+  const noAfterCursor = input.after ? false : true;
+
   const comments = await database
     .find({ date: { $gt: prevDate } })
-    .limit(args.input.first + 1)
+    .limit(input.first + 1)
     .sort({ date: 'asc' })
     .toArray();
 
-  const hasPreviousPage = await database
+  const docBefore = await database
     .find({ date: { $lt: prevDate } })
     .limit(1)
     .toArray();
 
-  const hasNextPage = await database
+  const docAfter = await database
     .find({ date: { $gt: comments[comments.length - 1].date } })
     .limit(1)
     .toArray();
 
   return {
     pageInfo: {
-      hasPreviousPage: hasPreviousPage[0] ? true : false,
-      hasNextPage: hasNextPage[0] ? true : false,
+      hasPreviousPage: docBefore[0] ? true : false,
+      hasNextPage: docAfter[0] ? true : false,
       startCursor: comments[1].date,
       endCursor: comments[comments.length - 1].date,
     },

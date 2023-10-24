@@ -35,7 +35,7 @@ export const commentConnection = async (
 
   const comments = await database
     .find({ date: { $gt: prevDate } })
-    .limit(input.first + 1)
+    .limit(input.first)
     .sort({ date: 'asc' })
     .toArray();
 
@@ -49,14 +49,17 @@ export const commentConnection = async (
     .limit(1)
     .toArray();
 
+  console.log(comments);
+  const trimmedComments = comments;
+
   return {
     pageInfo: {
       hasPreviousPage: docBefore[0] ? true : false,
       hasNextPage: docAfter[0] ? true : false,
-      startCursor: comments[1].date,
+      startCursor: comments[0].date,
       endCursor: comments[comments.length - 1].date,
     },
-    edges: createEdges(comments.slice(1), 'date'),
+    edges: createEdges(trimmedComments, 'date'),
   };
 };
 

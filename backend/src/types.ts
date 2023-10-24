@@ -1,3 +1,5 @@
+import { Collection } from 'mongodb';
+
 export type Comment = {
   date: string;
   content: string;
@@ -5,3 +7,5 @@ export type Comment = {
     name: string;
   };
 };
+
+export type Database = Collection<Comment>;

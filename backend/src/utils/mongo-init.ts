@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient } from 'mongodb';
-import { Comment } from '../types';
+import { Comment, Database } from '../types';
 import { config } from 'dotenv';
 
 config();
@@ -8,7 +8,7 @@ const uri = process.env.MONGO_URL as string;
 
 const mongoClient = new MongoClient(uri);
 
-const seedDb = (collection: Collection<Comment>) => {
+const seedDb = (collection: Database) => {
   const comments = [
     {
       date: '2023-10-22T00:00:00.000Z',
@@ -130,8 +130,6 @@ export const initMongo = async () => {
       .db('test-db')
       .collection<Comment>('comments');
 
-    /*     seedDb(collection);
-     */
     return collection;
   } catch (error) {
     console.error(error);

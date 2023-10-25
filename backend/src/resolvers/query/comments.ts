@@ -1,6 +1,4 @@
 import { Collection } from 'mongodb';
-import { Document } from 'mongodb';
-import { Database } from 'sqlite';
 import { Comment } from '../../types';
 
 type CommentConnectionInput = {

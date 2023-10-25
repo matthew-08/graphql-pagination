@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { ApolloServer } from 'apollo-server';
-import Query from './resolvers/resolvers';
+import resolvers from './resolvers/resolvers';
 
 import typeDefs from './schema/typedefs';
 import { initMongo } from './utils/mongo-init';
@@ -11,9 +11,7 @@ async function main() {
     const mongoClient = await initMongo();
     const server = new ApolloServer({
       typeDefs,
-      resolvers: {
-        Query,
-      },
+      resolvers,
       context: {
         database: mongoClient,
       },

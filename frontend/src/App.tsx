@@ -2,6 +2,9 @@ import { useState } from 'react';
 import './App.css';
 import './index.css';
 import CommentComponent from './components/CommentComponent';
+import { useEffect } from 'react';
+import { gql } from './__generated__';
+import { useQuery } from '@apollo/client';
 
 export type Comment = {
   date: string;
@@ -21,9 +24,36 @@ const initFormState: FormState = {
   name: '',
 };
 
+const BACKEND_URL = 'http://localhost:4000/';
+
+const GET_ALL_COMMENTS = gql(`
+  query GetAllComments($comm: CommentCollectionInput) {
+  commentConnection(input: $comm) {
+    edges {
+      cursor
+      node {
+        date
+        content
+        __typename
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}`);
+
 function App() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [form, setForm] = useState<FormState>(initFormState);
+  const { loading, data } = useQuery(GET_ALL_COMMENTS);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const handleNewComment = () => {
     setComments([

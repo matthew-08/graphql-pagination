@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import './index.css';
-import { useReducer } from 'react';
+import CommentComponent from './components/CommentComponent';
 
 export type Comment = {
   date: string;
@@ -16,12 +16,14 @@ type FormState = {
   content: string;
 };
 
+const initFormState: FormState = {
+  content: '',
+  name: '',
+};
+
 function App() {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [form, setForm] = useState<FormState>({
-    content: '',
-    name: '',
-  });
+  const [form, setForm] = useState<FormState>(initFormState);
 
   const handleNewComment = () => {
     setComments([
@@ -34,6 +36,7 @@ function App() {
         },
       },
     ]);
+    setForm(initFormState);
   };
 
   const handleFormChange = (field: 'name' | 'content', value: string) => {
@@ -66,11 +69,21 @@ function App() {
               value={form.content}
               placeholder="Type comment here:"
               className="border-2 min-w-full max-h-full"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleNewComment();
+                }
+              }}
               onChange={(e) => handleFormChange('content', e.target.value)}
             />
           </div>
-          <button>Submit</button>
+          <button className="mb-4">Submit</button>
         </form>
+        <div className="flex-col">
+          {comments.map((comment) => (
+            <CommentComponent comment={comment} />
+          ))}
+        </div>
       </div>
     </div>
   );
